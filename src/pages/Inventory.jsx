@@ -19,6 +19,7 @@ const emptyProduct = {
   stock: "",
   minStock: "",
   supplier: "",
+  image: "/unnamed.jpg",
   dateAdded: new Date().toISOString().slice(0, 10),
 };
 
@@ -84,6 +85,7 @@ export default function Inventory({ products, setProducts, perms }) {
       sellingPrice: Number(form.sellingPrice) || 0,
       stock,
       minStock: Number(form.minStock) || 0,
+      image: form.image || "/unnamed.jpg",
       status: stock === 0 ? "Out of Stock" : "Available",
     };
     if (editing) {
@@ -164,8 +166,16 @@ export default function Inventory({ products, setProducts, perms }) {
                   <tr key={p.id} className="border-t border-[#E2D4BC] last:border-b-0">
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl text-sm font-semibold" style={{ background: (CATEGORY_COLORS[p.category] || "#6B5544") + "22", color: CATEGORY_COLORS[p.category] || "#6B5544" }}>
-                          {p.name.charAt(0)}
+                        <div className="relative h-11 w-11 min-w-11 overflow-hidden rounded-2xl bg-[#FEFBF6] sm:h-12 sm:w-12">
+                          <img
+                            src={p.image || "/unnamed.jpg"}
+                            alt={p.name}
+                            loading="lazy"
+                            onError={(event) => {
+                              event.currentTarget.src = "/unnamed.jpg";
+                            }}
+                            className="h-full w-full object-cover"
+                          />
                         </div>
                         <div className="min-w-0">
                           <div className="truncate font-semibold text-[#3C2A1E]">{p.name}</div>
@@ -210,9 +220,22 @@ export default function Inventory({ products, setProducts, perms }) {
                 <Card key={p.id} className="border border-[#E2D4BC] bg-[#FEFBF6]">
                   <CardContent className="space-y-3 p-4">
                     <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-[#3C2A1E]">{p.name}</p>
-                        <p className="text-xs text-[#6B5544]">{p.sku} · {p.supplier}</p>
+                      <div className="flex items-center gap-3">
+                        <div className="relative h-16 w-16 min-w-16 shrink-0 overflow-hidden rounded-2xl bg-[#FEFBF6] sm:h-20 sm:w-20">
+                          <img
+                            src={p.image || "/unnamed.jpg"}
+                            alt={p.name}
+                            loading="lazy"
+                            onError={(event) => {
+                              event.currentTarget.src = "/unnamed.jpg";
+                            }}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-[#3C2A1E]">{p.name}</p>
+                          <p className="text-xs text-[#6B5544]">{p.sku} · {p.supplier}</p>
+                        </div>
                       </div>
                       <Badge color={CATEGORY_COLORS[p.category] || "#6B5544"} bg={(CATEGORY_COLORS[p.category] || "#6B5544") + "1c"}>{p.category}</Badge>
                     </div>

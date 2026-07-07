@@ -28,6 +28,7 @@ export function seedProducts() {
     stock,
     minStock,
     supplier,
+    image: i % 2 === 0 ? "/unnamed.jpg" : "/unnamed1.jpg",
     dateAdded: new Date(2026, (i % 6) + 1, ((i * 3) % 27) + 1).toISOString().slice(0, 10),
     status: stock === 0 ? "Out of Stock" : "Available",
   }));
