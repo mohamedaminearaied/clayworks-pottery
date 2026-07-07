@@ -67,7 +67,9 @@ export default function Sales({ sales, setSales, products, setProducts, perms, s
       const existing = prev.find((it) => it.productId === product.id);
       if (existing) {
         return prev.map((it) =>
-          it.productId === product.id ? { ...it, qty: it.qty + Number(pickedQty), total: (it.qty + Number(pickedQty)) * it.unitPrice } : it
+          it.productId === product.id
+            ? { ...it, qty: it.qty + Number(pickedQty), total: (it.qty + Number(pickedQty)) * it.unitPrice }
+            : it
         );
       }
       return [
@@ -75,6 +77,7 @@ export default function Sales({ sales, setSales, products, setProducts, perms, s
         {
           productId: product.id,
           name: product.name,
+          image: product.image || "/unnamed.jpg",
           qty: Number(pickedQty),
           unitPrice: product.sellingPrice,
           costPrice: product.costPrice,
@@ -191,7 +194,23 @@ export default function Sales({ sales, setSales, products, setProducts, perms, s
                     <td className="px-4 py-4 font-semibold text-[#3C2A1E]">{s.invoiceNumber}</td>
                     <td className="px-4 py-4 text-[#6B5544]">{s.date}</td>
                     <td className="px-4 py-4">{s.customerName || "—"}</td>
-                    <td className="px-4 py-4 text-[#6B5544]">{s.items.length} item{s.items.length > 1 ? "s" : ""} · {s.items.reduce((a, it) => a + it.qty, 0)} units</td>
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="relative h-11 w-11 overflow-hidden rounded-2xl bg-[#FEFBF6]">
+                          <img
+                            src={products.find((p) => p.id === s.items[0]?.productId)?.image || "/unnamed.jpg"}
+                            alt={s.items[0]?.name || "Product"}
+                            loading="lazy"
+                            onError={(event) => { event.currentTarget.src = "/unnamed.jpg"; }}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="truncate font-medium text-[#3C2A1E]">{s.items[0]?.name || "Product"}</div>
+                          <div className="text-xs text-[#6B5544]">{s.items.length} item{s.items.length > 1 ? "s" : ""} · {s.items.reduce((a, it) => a + it.qty, 0)} units</div>
+                        </div>
+                      </div>
+                    </td>
                     <td className="px-4 py-4"><Badge color="#6B5544" bg="#F6EFE3">{s.paymentMethod}</Badge></td>
                     <td className="px-4 py-4 font-semibold text-[#93481D]">{money(s.totalAmount)}</td>
                     <td className="px-4 py-4">
@@ -215,9 +234,20 @@ export default function Sales({ sales, setSales, products, setProducts, perms, s
                 <Card key={s.id} className="border border-[#E2D4BC] bg-[#FEFBF6]">
                   <CardContent className="space-y-3 p-4">
                     <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold text-[#3C2A1E]">{s.invoiceNumber}</p>
-                        <p className="text-xs text-[#6B5544]">{s.date}{s.customerName ? ` · ${s.customerName}` : ""}</p>
+                      <div className="flex items-start gap-3">
+                        <div className="relative h-14 w-14 overflow-hidden rounded-2xl bg-[#FEFBF6]">
+                          <img
+                            src={products.find((p) => p.id === s.items[0]?.productId)?.image || "/unnamed.jpg"}
+                            alt={s.items[0]?.name || "Product"}
+                            loading="lazy"
+                            onError={(event) => { event.currentTarget.src = "/unnamed.jpg"; }}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-[#3C2A1E]">{s.items[0]?.name || "Product"}</p>
+                          <p className="text-xs text-[#6B5544]">{s.items.length} item{s.items.length > 1 ? "s" : ""}</p>
+                        </div>
                       </div>
                       <Badge color="#6B5544" bg="#F6EFE3">{s.paymentMethod}</Badge>
                     </div>

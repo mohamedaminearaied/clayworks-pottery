@@ -166,7 +166,23 @@ export default function Purchases({ purchases, setPurchases, products, setProduc
                 {pageItems.map((pu) => (
                   <tr key={pu.id} className="border-t border-[#E2D4BC] last:border-b-0">
                     <td className="px-4 py-4 text-[#3C2A1E]">{pu.supplier}</td>
-                    <td className="px-4 py-4 font-semibold text-[#3C2A1E]">{pu.productName}</td>
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="relative h-11 w-11 overflow-hidden rounded-2xl bg-[#FEFBF6]">
+                          <img
+                            src={products.find((p) => p.id === pu.productId)?.image || "/unnamed.jpg"}
+                            alt={pu.productName}
+                            loading="lazy"
+                            onError={(event) => { event.currentTarget.src = "/unnamed.jpg"; }}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="truncate font-semibold text-[#3C2A1E]">{pu.productName}</div>
+                          <div className="text-xs text-[#6B5544]">Qty {pu.quantity}</div>
+                        </div>
+                      </div>
+                    </td>
                     <td className="px-4 py-4">{pu.quantity}</td>
                     <td className="px-4 py-4">{money(pu.purchasePrice)}</td>
                     <td className="px-4 py-4 font-semibold text-[#93481D]">{money(pu.totalCost)}</td>
@@ -192,9 +208,20 @@ export default function Purchases({ purchases, setPurchases, products, setProduc
                 <Card key={pu.id} className="border border-[#E2D4BC] bg-[#FEFBF6]">
                   <CardContent className="space-y-3 p-4">
                     <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold text-[#3C2A1E]">{pu.productName}</p>
-                        <p className="text-xs text-[#6B5544]">{pu.supplier}</p>
+                      <div className="flex items-start gap-3">
+                        <div className="relative h-16 w-16 overflow-hidden rounded-2xl bg-[#FEFBF6]">
+                          <img
+                            src={products.find((p) => p.id === pu.productId)?.image || "/unnamed.jpg"}
+                            alt={pu.productName}
+                            loading="lazy"
+                            onError={(event) => { event.currentTarget.src = "/unnamed.jpg"; }}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-[#3C2A1E]">{pu.productName}</p>
+                          <p className="text-xs text-[#6B5544]">{pu.supplier}</p>
+                        </div>
                       </div>
                       <span className="text-sm font-semibold text-[#93481D]">{money(pu.totalCost)}</span>
                     </div>
