@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ExportBar } from "@/components/ExportBar";
 import { Modal } from "@/components/ui/modal";
 import { Badge } from "@/components/ui/badge";
 import { Field, Input, Textarea, Select } from "@/components/ui/forms";
@@ -23,7 +24,7 @@ const emptyProduct = {
   dateAdded: new Date().toISOString().slice(0, 10),
 };
 
-export default function Inventory({ products, setProducts, perms }) {
+export default function Inventory({ products, setProducts, perms, setPrintData }) {
   const [query, setQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [stockFilter, setStockFilter] = useState("All");
@@ -57,6 +58,28 @@ export default function Inventory({ products, setProducts, perms }) {
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
   const pageItems = filtered.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+
+  const exportColumns = [
+    { key: "name", label: "Product" },
+    { key: "category", label: "Category" },
+    { key: "sku", label: "SKU" },
+    ...(perms.viewCost ? [{ key: "costPrice", label: "Cost" }] : []),
+    { key: "sellingPrice", label: "Price" },
+    { key: "stock", label: "Stock" },
+    { key: "status", label: "Status" },
+    { key: "supplier", label: "Supplier" },
+  ];
+
+  const exportRows = filtered.map((p) => ({
+    name: p.name,
+    category: p.category,
+    sku: p.sku,
+    costPrice: money(p.costPrice),
+    sellingPrice: money(p.sellingPrice),
+    stock: p.stock,
+    status: p.stock === 0 ? "Out of stock" : p.stock <= p.minStock ? "Low stock" : "Available",
+    supplier: p.supplier,
+  }));
 
   function openAdd() {
     setEditing(null);
@@ -108,6 +131,7 @@ export default function Inventory({ products, setProducts, perms }) {
         subtitle={`${products.length} products across ${CATEGORIES.length} categories`}
         action={
           <div className="flex flex-wrap items-center gap-3">
+            <ExportBar title="Inventory" columns={exportColumns} rows={exportRows} filename="inventory" onPrint={setPrintData} />
             {perms.editInventory && (
               <Button variant="default" className="inline-flex items-center gap-2" onClick={openAdd}>
                 <Plus size={15} /> Add product

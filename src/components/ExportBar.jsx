@@ -65,7 +65,6 @@ export function ExportBar({ title, columns, rows, filename, onPrint }) {
         <div className="absolute top-[calc(100%+6px)] right-0 z-20 w-47.5 overflow-hidden rounded-[10px] border border-[#E2D4BC] bg-[#FFFCF6] shadow-[0_8px_20px_rgba(60,42,30,0.14)]">
           {[
             { label: "Export as CSV", icon: FileSpreadsheet, fn: exportCSV },
-            { label: "Export as Excel", icon: FileSpreadsheet, fn: exportExcel },
             { label: "Print / Save as PDF", icon: Printer, fn: printPDF },
           ].map(({ label, icon: Icon, fn }) => (
             <button
